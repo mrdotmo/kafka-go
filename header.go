@@ -1,8 +1,12 @@
 package kafka
 
-import "errors"
+import (
+	"encoding/binary"
+	"errors"
+)
 
 type RequestHeader struct {
+	apiVersion    uint16
 	correlationId [4]byte
 }
 
@@ -15,6 +19,7 @@ func parseHeader(header []byte) (RequestHeader, error) {
 		return rv, errors.New("header must have at least 8 bytes")
 	}
 
+	rv.apiVersion = binary.BigEndian.Uint16(header[2:4])
 	copy(rv.correlationId[:], header[4:8])
 	return rv, nil
 }
