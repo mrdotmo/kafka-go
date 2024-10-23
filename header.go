@@ -2,12 +2,19 @@ package kafka
 
 import "errors"
 
+type Header struct {
+	correlationId [4]byte
+}
+
 // parseHeader extracts the correlation ID from the header.
-func parseHeader(header []byte) ([]byte, error) {
+//
+//lint:ignore U1000 Disable unused lint check until later.
+func parseHeader(header []byte) (Header, error) {
+	var rv Header
 	if len(header) < 8 {
-		return nil, errors.New("header must have at least 8 bytes")
+		return rv, errors.New("header must have at least 8 bytes")
 	}
 
-	correlationId := header[4:8]
-	return correlationId, nil
+	copy(rv.correlationId[:], header[4:8])
+	return rv, nil
 }
